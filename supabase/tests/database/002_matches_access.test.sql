@@ -24,6 +24,14 @@ insert into public.players (id, display_name) values
   ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Alice Test'),
   ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Bob Test');
 
+-- A tournament that both players have entered (tournament matches must refer
+-- to a real tournament and to players entered in it).
+insert into public.tournaments (id, name) values
+  ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Test Open');
+insert into public.tournament_entries (tournament_id, player_id) values
+  ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'),
+  ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
+
 -- An OLD casual match (created an hour ago) with one game, and a tournament match.
 insert into public.matches (id, match_type, player_a_id, player_b_id, played_at, created_at) values
   ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'casual',

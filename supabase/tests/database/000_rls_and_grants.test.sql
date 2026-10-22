@@ -6,7 +6,7 @@
 -- leave data behind.
 
 begin;
-select plan(18);
+select plan(24);
 
 -- 1. No table in the public schema may be missing Row Level Security.
 --    When you add a table in a later migration, this test fails until RLS is on.
@@ -53,6 +53,22 @@ select table_privs_are('public', 'match_games', 'anon', array['SELECT', 'INSERT'
 select table_privs_are('public', 'match_games', 'authenticated',
   array['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
   'authenticated can attempt every action on match_games (RLS limits non-officers)');
+
+select table_privs_are('public', 'tournaments', 'anon', array['SELECT'],
+  'anon can only read tournaments');
+select table_privs_are('public', 'tournaments', 'authenticated',
+  array['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+  'authenticated can attempt every action on tournaments (RLS limits it to officers)');
+select table_privs_are('public', 'tournament_entries', 'anon', array['SELECT'],
+  'anon can only read tournament entries');
+select table_privs_are('public', 'tournament_entries', 'authenticated',
+  array['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+  'authenticated can attempt every action on tournament entries (RLS limits it to officers)');
+select table_privs_are('public', 'rating_history', 'anon', array['SELECT'],
+  'anon can only read rating history');
+select table_privs_are('public', 'rating_history', 'authenticated',
+  array['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+  'authenticated can attempt every action on rating history (RLS limits it to officers)');
 
 -- Column-level insert rights for anon on matches: the Play form's columns yes,
 -- the server-controlled columns no.
