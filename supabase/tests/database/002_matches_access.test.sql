@@ -8,7 +8,7 @@
 -- the tests do the same, one statement at a time.
 
 begin;
-select plan(50);
+select plan(60);
 
 -- ---------------------------------------------------------------------------
 -- Test data (created as the setup role, so RLS does not apply)
@@ -53,6 +53,10 @@ select lives_ok($$ insert into public.match_games (match_id, game_number, score_
 select lives_ok($$ insert into public.matches (match_type, player_a_id, player_b_id)
   values ('casual', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb') $$,
   'anon can log a casual match between two players');
+
+select lives_ok($$ insert into public.matches (match_type, player_a_id, guest_b_name, points_to, win_by_two)
+  values ('casual', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Guest Gina', 21, false) $$,
+  'anon can choose the scoring rule (to 21, no win-by-2) for a casual match');
 
 select throws_ok($$ insert into public.matches (match_type, player_a_id, player_b_id)
   values ('tournament', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb') $$,
@@ -124,7 +128,7 @@ delete from public.match_games;
 reset role;
 select is((select count(*) from public.matches where guest_b_name = 'Hacked'), 0::bigint,
   'a non-officer could not edit matches');
-select is((select count(*) from public.matches), 5::bigint,
+select is((select count(*) from public.matches), 6::bigint,
   'a non-officer could not delete matches');
 select is((select score_a from public.match_games where match_id = 'cccccccc-cccc-cccc-cccc-cccccccccccc'),
   11::smallint, 'a non-officer could not edit or delete games');
@@ -212,6 +216,40 @@ select throws_ok($$ insert into public.match_games (match_id, game_number, score
 select lives_ok($$ insert into public.match_games (match_id, game_number, score_a, score_b)
   values ('cccccccc-cccc-cccc-cccc-cccccccccccc', 3, 14, 12) $$,
   'a long deuce game like 14-12 is accepted');
+
+-- Scoring rules: games to 11 or 21, with or without win-by-2.
+insert into public.matches (id, match_type, player_a_id, player_b_id, points_to, win_by_two) values
+  ('a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1', 'casual',
+   'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 21, true),
+  ('a2a2a2a2-a2a2-a2a2-a2a2-a2a2a2a2a2a2', 'casual',
+   'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 11, false);
+
+select lives_ok($$ insert into public.match_games (match_id, game_number, points_to, win_by_two, score_a, score_b)
+  values ('a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1', 1, 21, true, 21, 15) $$,
+  'a game of 21-15 is accepted in a match to 21');
+select throws_ok($$ insert into public.match_games (match_id, game_number, points_to, win_by_two, score_a, score_b)
+  values ('a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1', 2, 21, true, 21, 20) $$,
+  '23514', null, 'a game of 21-20 is rejected when win-by-2 applies');
+select lives_ok($$ insert into public.match_games (match_id, game_number, points_to, win_by_two, score_a, score_b)
+  values ('a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1', 2, 21, true, 21, 23) $$,
+  'a deuce game of 21-23 is accepted in a match to 21');
+select throws_ok($$ insert into public.match_games (match_id, game_number, score_a, score_b)
+  values ('a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1', 3, 11, 3) $$,
+  '23503', null, 'a game must use the same scoring rule as its match');
+select lives_ok($$ insert into public.match_games (match_id, game_number, points_to, win_by_two, score_a, score_b)
+  values ('a2a2a2a2-a2a2-a2a2-a2a2-a2a2a2a2a2a2', 1, 11, false, 11, 10) $$,
+  'a game of 11-10 is accepted when win-by-2 is off');
+select throws_ok($$ insert into public.match_games (match_id, game_number, points_to, win_by_two, score_a, score_b)
+  values ('a2a2a2a2-a2a2-a2a2-a2a2-a2a2a2a2a2a2', 2, 11, false, 12, 10) $$,
+  '23514', null, 'a game of 12-10 is rejected when win-by-2 is off (first to 11 wins)');
+select throws_ok($$ insert into public.matches (match_type, player_a_id, player_b_id, points_to)
+  values ('casual', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 15) $$,
+  '23514', null, 'games can only be to 11 or 21 (15 is rejected)');
+select throws_ok($$ insert into public.matches (match_type, player_a_id, player_b_id, points_to)
+  values ('casual', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 6) $$,
+  '23514', null, 'games to 6 are not allowed');
+select throws_ok($$ update public.matches set points_to = 11 where id = 'a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1' $$,
+  '23514', null, 'changing a match rule is refused when its existing games would become invalid');
 
 select * from finish();
 rollback;

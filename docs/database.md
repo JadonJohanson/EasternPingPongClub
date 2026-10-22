@@ -54,10 +54,14 @@ A separate **prod** project is created later, once the structure is stable.
 - Each side is exactly one of a player (`player_a_id` / `player_b_id`) or a typed
   guest name. Tournament matches need two real players. A player cannot play
   themselves, and a match needs at least one club player.
-- `match_games` holds one row per game. A game is to 11, win by 2 (11-0 to
-  11-9, or a 2-point gap above 11). The winner is worked out from the games.
+- `match_games` holds one row per game. Each match has a scoring rule:
+  `points_to` (**11 or 21**) and `win_by_two` (true or false). A foreign key
+  forces every game to carry the same rule as its match, so the database can
+  check each score. With win-by-two, 11-0 to 11-9 are valid, and past 11 the
+  game ends on a 2-point gap (12-10, 13-11, ...). Without it, first to the
+  target wins (11-10 is valid). The winner is worked out from the games.
 - Visitors may insert casual matches only, and only the Play-form columns
-  (they cannot set `id`, `created_at` or `tournament_id`). `created_at` must equal
+  (including the scoring rule; they cannot set `id`, `created_at` or `tournament_id`). `created_at` must equal
   the current time and `played_at` must be within the last 30 days.
 - Visitors may add games only to a casual match created in the last 2 minutes,
   so nobody can alter older results. The website saves the match, then its

@@ -59,6 +59,8 @@ select table_privs_are('public', 'match_games', 'authenticated',
 select ok(
   has_column_privilege('anon', 'public.matches', 'guest_b_name', 'INSERT')
   and has_column_privilege('anon', 'public.matches', 'player_a_id', 'INSERT')
+  and has_column_privilege('anon', 'public.matches', 'points_to', 'INSERT')
+  and has_column_privilege('anon', 'public.matches', 'win_by_two', 'INSERT')
   and has_column_privilege('anon', 'public.matches', 'played_at', 'INSERT'),
   'anon may insert the Play form columns of matches'
 );

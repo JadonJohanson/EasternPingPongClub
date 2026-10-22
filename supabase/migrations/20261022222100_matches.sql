@@ -26,8 +26,17 @@ create table public.matches (
   guest_a_name  text,
   player_b_id   uuid references public.players (id) on delete restrict,
   guest_b_name  text,
+  -- Scoring rule for every game of this match: played to 11 or 21 points,
+  -- and either "win by 2" (deuce) or first to the target wins outright.
+  points_to     smallint not null default 11,
+  win_by_two    boolean not null default true,
   played_at     timestamptz not null default now(),
   created_at    timestamptz not null default now(),
+
+  constraint matches_points_to_valid check (points_to in (11, 21)),
+  -- Lets match_games point at (id, points_to, win_by_two) so every game is
+  -- guaranteed to use the same scoring rule as its match.
+  constraint matches_id_rule_key unique (id, points_to, win_by_two),
 
   constraint matches_type_valid check (match_type in ('casual', 'tournament')),
 
@@ -77,7 +86,8 @@ revoke all on public.matches from anon, authenticated;
 grant select on public.matches to anon, authenticated;
 -- Visitors may add a match, but only these columns. They cannot choose the id,
 -- the created_at time, or a tournament_id.
-grant insert (match_type, player_a_id, guest_a_name, player_b_id, guest_b_name, played_at)
+grant insert (match_type, player_a_id, guest_a_name, player_b_id, guest_b_name,
+              points_to, win_by_two, played_at)
   on public.matches to anon;
 -- Logged-in users get every column (RLS still limits non-officers to casual).
 grant insert, update, delete on public.matches to authenticated;
@@ -125,29 +135,48 @@ create policy "matches: officers can delete"
 -- match_games
 -- ---------------------------------------------------------------------------
 create table public.match_games (
-  match_id    uuid not null references public.matches (id) on delete cascade,
+  match_id    uuid not null,
   game_number smallint not null,
+  -- Copies of the match's scoring rule. The foreign key below forces them to
+  -- equal the match's own values, so the score check can live right here.
+  points_to   smallint not null default 11,
+  win_by_two  boolean not null default true,
   score_a     smallint not null,
   score_b     smallint not null,
 
   primary key (match_id, game_number),
 
+  -- ON UPDATE CASCADE: if an officer changes a match's rule, its games follow
+  -- (and must still be valid scores). ON DELETE CASCADE: deleting a match
+  -- deletes its games.
+  constraint match_games_match_rule_fkey
+    foreign key (match_id, points_to, win_by_two)
+    references public.matches (id, points_to, win_by_two)
+    on update cascade on delete cascade,
+
   constraint match_games_number_valid check (game_number between 1 and 9),
   constraint match_games_scores_range check (
     score_a between 0 and 99 and score_b between 0 and 99
   ),
-  -- A finished game to 11, win by 2: 11-0 ... 11-9, or past 10-10 a 2-point
-  -- gap (12-10, 13-11, ...). Walkovers and forfeits are handled in the
-  -- tournament step.
+  -- A finished game. The winner has exactly `points_to` points, and the loser
+  -- fewer; with win_by_two the loser has at most points_to - 2. Past the
+  -- target (deuce, win_by_two only) the game ends on a 2-point gap, e.g.
+  -- 12-10 or 23-21. Walkovers and forfeits are handled in the tournament step.
   constraint match_games_score_valid check (
-    (score_a = 11 and score_b <= 9)
-    or (score_b = 11 and score_a <= 9)
-    or (abs(score_a - score_b) = 2 and greatest(score_a, score_b) > 11)
+    (
+      greatest(score_a, score_b) = points_to
+      and least(score_a, score_b) <= points_to - case when win_by_two then 2 else 1 end
+    )
+    or (
+      win_by_two
+      and greatest(score_a, score_b) > points_to
+      and abs(score_a - score_b) = 2
+    )
   )
 );
 
 comment on table public.match_games is
-  'One row per game of a match (11 points, win by 2). The match winner is whoever wins more games.';
+  'One row per game of a match, scored by the match rule (to 11 or 21, win by 2 or not). The match winner is whoever wins more games.';
 
 alter table public.match_games enable row level security;
 
