@@ -1,0 +1,46 @@
+/*
+  THE THEME FILE: every color, font and size choice for the site lives here.
+  To re-brand the site, edit the values below. Nothing else needs to change,
+  because the rest of the CSS only refers to these names with var(--name).
+
+  The green and white below is a placeholder until the club picks real colors.
+*/
+
+:root {
+  /* Brand colors */
+  --color-primary: #1f7a3d;
+  --color-primary-hover: #17602f;
+  --color-on-primary: #ffffff; /* text drawn on top of the primary color */
+
+  /* Page colors */
+  --color-bg: #ffffff;
+  --color-surface: #f1f7f3; /* cards and the sidebar */
+  --color-text: #14231a;
+  --color-muted: #4a5f52; /* secondary text */
+  --color-border: #d0dfd5;
+
+  /* Shape and type */
+  --radius: 10px;
+  --font-body:
+    system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --topbar-height: 56px;
+}
+
+/* Dark mode: when the visitor's phone or computer is set to dark, these
+   values replace the ones above. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #4cc27a;
+    --color-primary-hover: #6fd596;
+    --color-on-primary: #08140c;
+
+    --color-bg: #0e1812;
+    --color-surface: #16251c;
+    --color-text: #e8f3ec;
+    --color-muted: #9db5a5;
+    --color-border: #2a3f32;
+  }
+}
