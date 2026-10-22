@@ -1,0 +1,59 @@
+# Builds the site and publishes it to GitHub Pages every time something is
+# merged into `main`. The live address is:
+#   https://jadonjohanson.github.io/EasternPingPongClub/
+#
+# One-time setup (done in the repo's web settings, not in this file):
+#   Settings > Pages > Build and deployment > Source = "GitHub Actions"
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Adds a "Run workflow" button on the Actions tab so you can redeploy by hand.
+  workflow_dispatch:
+
+# If two deploys start close together, let the running one finish and keep
+# only the newest waiting one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Least privilege: building only needs to read the code.
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          # Uses the Node version written in the .nvmrc file, so your laptop
+          # and the build server agree.
+          node-version-file: .nvmrc
+          cache: npm
+
+      # `npm ci` installs exactly what package-lock.json says (reproducible).
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+      # Packages the built `dist` folder so the deploy job can publish it.
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Only this job is allowed to publish to Pages.
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

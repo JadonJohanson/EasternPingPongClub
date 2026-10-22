@@ -1,0 +1,32 @@
+# Dependencies (re-created by `npm install`)
+node_modules
+
+# Build output (re-created by `npm run build`)
+dist
+dist-ssr
+
+# Secrets and local settings. NEVER commit these. The Supabase service-role
+# key in particular must never appear anywhere in this repo.
+.env
+.env.local
+.env.*.local
+*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Editor and OS files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+Thumbs.db
+*.suo
+*.sw?
+
+# Supabase CLI local state (added in Phase 2)
+supabase/.branches
+supabase/.temp
