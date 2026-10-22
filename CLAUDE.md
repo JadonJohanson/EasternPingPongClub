@@ -156,3 +156,33 @@ Read all of it before changing anything.
 - Routes live in `src/App.jsx`; sidebar links live in `NAV_ITEMS` in
   `src/components/Layout.jsx`. Add both when adding a page.
 - Comment code for a reader new to React: say what it does and why.
+
+## Database conventions (Phase 2 onward)
+
+Full detail is in `docs/database.md`; keep that file up to date as tables are
+added.
+
+- Supabase dev project: `EasternPingPongClub-dev`, ref `dbuzjfoqhglaszkvdbww`,
+  East US (N. Virginia), Postgres 17. Project settings chosen at creation:
+  Data API on, "Automatically expose new tables" **off**, "Enable automatic
+  RLS" **on**.
+- Schema changes are migration files only: `npx supabase migration new <name>`.
+  Never edit the schema in the dashboard.
+- Every table: `enable row level security`, then `revoke all ... from anon,
+authenticated`, then the exact `grant`s, then one policy per allowed action.
+  Auto-expose is off, so a table with no grant is unreachable from the site.
+- Officer checks use `private.is_officer()` (reads the `officers` table).
+  Never trust user metadata.
+- Every table gets pgTAP tests in `supabase/tests/database/` for anon,
+  logged-in non-officer and officer. `000_rls_and_grants.test.sql` also lists
+  the exact privileges per table and fails if any table lacks RLS.
+- CI runs `npx supabase test db` against a throwaway local database. Docker is
+  required to run it locally.
+- Claude does not apply migrations to the hosted project. The owner runs
+  `npx supabase link` and `npx supabase db push` himself because they need the
+  database password, which must never be pasted into chat.
+- Hosted-project sign-ups must be turned off in the dashboard before the first
+  officer login (Phase 6). `supabase/config.toml` already has them off.
+- Decisions for 2b: casual and tournament scores are stored game by game
+  (`match_games`); a guest opponent is a typed name on the match, never a row
+  in `players`.

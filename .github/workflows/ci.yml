@@ -26,3 +26,27 @@ jobs:
       - run: npm run format:check
       # Make sure the site actually builds.
       - run: npm run build
+
+  # Starts a throwaway copy of Supabase's database on the build server, applies
+  # every migration in supabase/migrations, then runs every test in
+  # supabase/tests/database. Nothing here touches your real Supabase project.
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # `-x` skips parts of Supabase the tests do not need, to start faster.
+      # The database and the login service (which owns the auth tables) stay.
+      - name: Start local Supabase
+        run: npx supabase start -x realtime,storage-api,imgproxy,mailpit,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: Run database tests
+        run: npx supabase test db

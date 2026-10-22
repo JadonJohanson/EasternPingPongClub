@@ -12,7 +12,7 @@ and rankings, player profiles, and quick casual match logging from a phone.
 
 - [React](https://react.dev/) with [Vite](https://vite.dev/) (plain JavaScript)
 - [React Router](https://reactrouter.com/) using hash routes
-- [Supabase](https://supabase.com/) (Postgres database and login), added in Phase 2
+- [Supabase](https://supabase.com/) (Postgres database and login)
 - GitHub Pages for hosting, GitHub Actions for deployment
 
 ## Run it on your computer
@@ -50,7 +50,14 @@ src/
   components/         Reusable pieces (Layout with the sidebar, etc.)
   pages/              One file per page of the site
 .github/workflows/    deploy.yml (publish site), ci.yml (checks on PRs)
+supabase/             Database migrations, tests and local Supabase config
+docs/                 Guides (docs/database.md)
 ```
+
+## Database
+
+The database design, security rules and the commands for testing and applying
+migrations are in [docs/database.md](docs/database.md).
 
 ## How changes are made
 
