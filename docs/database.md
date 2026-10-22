@@ -36,23 +36,51 @@ A separate **prod** project is created later, once the structure is stable.
 
 ## What exists so far
 
-| Table      | Who can read              | Who can change                                      |
-| ---------- | ------------------------- | --------------------------------------------------- |
-| `players`  | everyone                  | officers (add, edit, delete)                        |
-| `officers` | you see only your own row | nobody through the website (added by hand)          |
-| `settings` | everyone                  | officers can edit (one row, never added or deleted) |
+| Table         | Who can read              | Who can change                                                                            |
+| ------------- | ------------------------- | ----------------------------------------------------------------------------------------- |
+| `players`     | everyone                  | officers (add, edit, delete)                                                              |
+| `officers`    | you see only your own row | nobody through the website (added by hand)                                                |
+| `settings`    | everyone                  | officers can edit (one row, never added or deleted)                                       |
+| `matches`     | everyone                  | visitors can ADD casual matches; officers do the rest                                     |
+| `match_games` | everyone                  | visitors can ADD games to a casual match made in the last 2 minutes; officers do the rest |
 
 `settings` holds the starting rating (default 1000) and K factor (default 32).
 
+### matches and match_games (step 2b)
+
+- One flat `matches` table. `match_type` is `casual` or `tournament`.
+  `tournament_id` is filled only for tournament rows (its foreign key is added
+  in 2c when `tournaments` exists).
+- Each side is exactly one of a player (`player_a_id` / `player_b_id`) or a typed
+  guest name. Tournament matches need two real players. A player cannot play
+  themselves, and a match needs at least one club player.
+- `match_games` holds one row per game. A game is to 11, win by 2 (11-0 to
+  11-9, or a 2-point gap above 11). The winner is worked out from the games.
+- Visitors may insert casual matches only, and only the Play-form columns
+  (they cannot set `id`, `created_at` or `tournament_id`). `created_at` must equal
+  the current time and `played_at` must be within the last 30 days.
+- Visitors may add games only to a casual match created in the last 2 minutes,
+  so nobody can alter older results. The website saves the match, then its
+  games, in two quick requests.
+- Known limit: the database does not force a match to have a sensible number
+  of games. The Phase 5 Play form (with its CAPTCHA and checks) handles that,
+  and officers can fix mistakes.
+- A player who has matches cannot be deleted (foreign key). Rename instead.
+
+### Supabase's automatic-RLS helper
+
+"Enable automatic RLS" makes Supabase create `public.rls_auto_enable()`, which
+switches RLS on for new tables. A migration removes everyone's permission to
+call it (Security Advisor warning). The automatic behavior still works.
+
 ## What is planned next
 
-| Step | Adds                                                       |
-| ---- | ---------------------------------------------------------- |
-| 2b   | `matches` and `match_games`: casual and tournament results |
-| 2c   | `tournaments`, `tournament_entries`, `rating_history`      |
-| 2d   | `events`, `signups`, `contact_messages`, fake seed data    |
+| Step | Adds                                                    |
+| ---- | ------------------------------------------------------- |
+| 2c   | `tournaments`, `tournament_entries`, `rating_history`   |
+| 2d   | `events`, `signups`, `contact_messages`, fake seed data |
 
-### Decisions already made for 2b
+### Decisions behind 2b
 
 - **Game-by-game scores.** Each game's points are stored (for example 11-7,
   9-11, 11-8) in `match_games`, one row per game. The match's games-won count
