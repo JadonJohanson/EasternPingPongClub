@@ -1,0 +1,39 @@
+.players__search input {
+  width: 100%;
+  max-width: 28rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.players__count {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.85rem;
+}
+
+.players__list {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 28rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Big tap targets: members use this on a phone. */
+.players__list a {
+  display: block;
+  padding: 0.8rem 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.players__list a:hover {
+  border-color: var(--color-primary);
+}

@@ -46,6 +46,13 @@ export default [
     },
   },
 
+  // Command-line scripts run in Node, not the browser, so they may use
+  // Node's built-ins such as `process`.
+  {
+    files: ['scripts/**/*.{js,mjs}'],
+    languageOptions: { globals: globals.node },
+  },
+
   // Must come last: turns off any ESLint rule that would fight with Prettier
   // over spacing and quotes. Prettier owns formatting; ESLint owns correctness.
   prettier,
