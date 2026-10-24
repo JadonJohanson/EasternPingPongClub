@@ -1,0 +1,31 @@
+.signup {
+  max-width: 32rem;
+}
+
+/* Moves the honeypot field far off-screen. (display:none can be detected by
+   smarter bots; off-screen positioning is the usual approach.) */
+.signup__trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.signup__failed {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* The button class comes from index.css. Full width is easier to tap on phones. */
+.signup__submit {
+  width: 100%;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.signup__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

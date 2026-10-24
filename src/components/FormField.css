@@ -1,0 +1,41 @@
+.field {
+  margin-bottom: 1.1rem;
+}
+
+.field__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.field__hint {
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.field__error {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Inputs and dropdowns. 16px text stops iPhones zooming in when you tap one. */
+.field input,
+.field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.field input[aria-invalid='true'],
+.field select[aria-invalid='true'] {
+  border-color: var(--color-accent);
+}
