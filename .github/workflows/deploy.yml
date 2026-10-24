@@ -4,6 +4,8 @@
 #
 # One-time setup (done in the repo's web settings, not in this file):
 #   Settings > Pages > Build and deployment > Source = "GitHub Actions"
+#   Settings > Secrets and variables > Actions > Variables: add
+#     VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (see .env.example)
 name: Deploy to GitHub Pages
 
 on:
@@ -37,7 +39,14 @@ jobs:
       # `npm ci` installs exactly what package-lock.json says (reproducible).
       - run: npm ci
       - run: npm run lint
+      # The two VITE_ values are the Supabase project URL and the public "anon"
+      # key. They are stored as repository *variables* (Settings > Secrets and
+      # variables > Actions > Variables), not secrets, because they end up in
+      # the public site anyway. Never put the service-role key here.
       - run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
 
       # Packages the built `dist` folder so the deploy job can publish it.
       - uses: actions/upload-pages-artifact@v4

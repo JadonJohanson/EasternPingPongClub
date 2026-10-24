@@ -24,6 +24,8 @@ jobs:
       - run: npm run lint
       # Formatting rules (Prettier): fails if a file is not formatted.
       - run: npm run format:check
+      # Unit tests (Vitest).
+      - run: npm test
       # Make sure the site actually builds.
       - run: npm run build
 

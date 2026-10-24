@@ -24,6 +24,20 @@ npm install      # download the libraries (first time only)
 npm run dev      # start the site; open the address it prints
 ```
 
+## Connect it to the database
+
+The site reads from Supabase. Locally, copy `.env.example` to `.env` and fill
+in the project URL and the **anon** key (Supabase dashboard > Project Settings >
+API). Restart `npm run dev` after changing `.env`. The `.env` file is ignored
+by git. Never use the `service_role` key here.
+
+Without a `.env` file the site still runs; the Home page just says the
+database is not connected.
+
+For the live site, add the same two values as repository **variables** named
+`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (GitHub: Settings > Secrets and
+variables > Actions > Variables), then re-run the deploy.
+
 ## Useful commands
 
 | Command                | What it does                               |
@@ -32,6 +46,7 @@ npm run dev      # start the site; open the address it prints
 | `npm run build`        | Build the real site into the `dist` folder |
 | `npm run preview`      | Serve the built site locally to try it out |
 | `npm run lint`         | Check the code for mistakes (ESLint)       |
+| `npm test`             | Run the unit tests (Vitest)                |
 | `npm run format`       | Auto-format all files (Prettier)           |
 | `npm run format:check` | Check formatting without changing files    |
 
@@ -47,7 +62,9 @@ src/
   siteConfig.js       Club name and other facts used in many places
   theme.css           ALL colors, fonts and sizes (edit this to re-brand)
   index.css           Base styles shared by every page
-  components/         Reusable pieces (Layout with the sidebar, etc.)
+  components/         Reusable pieces (Layout, loading/error states, next event)
+  lib/                Shared helpers (Supabase connection, data hook, dates)
+  data/               Functions that read from the database
   pages/              One file per page of the site
 .github/workflows/    deploy.yml (publish site), ci.yml (checks on PRs)
 supabase/             Database migrations, tests and local Supabase config
