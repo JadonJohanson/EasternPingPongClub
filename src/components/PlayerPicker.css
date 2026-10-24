@@ -1,0 +1,61 @@
+.picker {
+  margin-bottom: 1rem;
+}
+
+.picker input {
+  width: 100%;
+}
+
+.picker__options {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0;
+  margin: 0.4rem 0 0;
+  list-style: none;
+}
+
+/* Full-width, tall buttons: easy to tap with a thumb. */
+.picker__options button {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.8rem;
+  font: inherit;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.picker__options button:hover {
+  border-color: var(--color-primary);
+}
+
+.picker__guest {
+  color: var(--color-muted);
+}
+
+.picker__chosen {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius);
+}
+
+.picker__change {
+  padding: 0.4rem 0.6rem;
+  font: inherit;
+  font-weight: 400;
+  color: var(--color-primary);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+}

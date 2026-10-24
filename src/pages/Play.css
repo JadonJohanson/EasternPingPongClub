@@ -1,0 +1,75 @@
+.play {
+  max-width: 32rem;
+}
+
+.play fieldset {
+  padding: 0;
+  margin: 0 0 1rem;
+  border: 0;
+}
+
+.play__rules-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.play__choice {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  min-height: 2.75rem;
+}
+
+.play__game {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.play__game-number {
+  width: 4.5rem;
+  font-size: 0.9rem;
+}
+
+/* Big, centered number boxes that open the number keypad on phones. */
+.play__game input {
+  width: 4rem;
+  padding: 0.6rem 0.2rem;
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.play__add,
+.play__remove {
+  min-height: 2.75rem;
+  padding: 0 0.8rem;
+  font: inherit;
+  color: var(--color-primary);
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.play__summary {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.play__failed {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.play__submit {
+  width: 100%;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.play__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
