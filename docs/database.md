@@ -151,6 +151,25 @@ through new migrations and the checklist below.
 - **Spam protection comes in Phase 5.** The public "add casual match" rule is
   tightened then, when the CAPTCHA approach is chosen.
 
+## Adding a sample event by hand (to see the Home page work)
+
+Run this in the dashboard SQL editor of the **dev** project (it adds one fake
+event starting two days from now; delete it from the Table Editor when you are done):
+
+```sql
+insert into public.events (title, description, location, starts_at, ends_at, kind)
+values (
+  'Weekly practice',
+  'Open play, all levels welcome.',
+  'Student Center, Game Room',
+  now() + interval '2 days',
+  now() + interval '2 days 2 hours',
+  'practice'
+);
+```
+
+Times are stored in UTC; the site shows them in New York time.
+
 ## Running things
 
 ### Run the database tests on your computer
