@@ -103,7 +103,9 @@ A separate **prod** project is created later, once the structure is stable.
 - `events`: title, description, location, start and end time, kind (`practice`,
   `tournament`, `social`, `other`), an optional link to a tournament, and a
   `cancelled` flag. The Home page's "next event" is the first event whose
-  `starts_at` is in the future and not cancelled.
+  `starts_at` is in the future and not cancelled. **Event times are plain
+  New York wall-clock times** (type `timestamp(0)`, no time zone, no
+  fractions of a second), so the dashboard shows exactly what you typed.
 - `signups` (the Sign Up form): name, school email (must end in
   `@easternct.edu` or `@my.easternct.edu`), **Eastern ID (exactly 8 digits, stored
   as text)**, skill level (`beginner`, `intermediate`, `advanced`, `expert`,
@@ -154,7 +156,7 @@ through new migrations and the checklist below.
 ## Adding a sample event by hand (to see the Home page work)
 
 Run this in the dashboard SQL editor of the **dev** project (it adds one fake
-event starting two days from now; delete it from the Table Editor when you are done):
+event; delete it from the Table Editor when you are done):
 
 ```sql
 insert into public.events (title, description, location, starts_at, ends_at, kind)
@@ -162,13 +164,14 @@ values (
   'Weekly practice',
   'Open play, all levels welcome.',
   'Student Center, Game Room',
-  now() + interval '2 days',
-  now() + interval '2 days 2 hours',
+  '2026-11-04 19:00',
+  '2026-11-04 21:00',
   'practice'
 );
 ```
 
-Times are stored in UTC; the site shows them in New York time.
+Times are typed and shown exactly as written (New York time). Use a date in the
+future so it counts as the "next event".
 
 ## Running things
 
