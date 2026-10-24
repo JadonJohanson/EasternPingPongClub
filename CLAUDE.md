@@ -33,6 +33,9 @@ Read all of it before changing anything.
   players, with a "guest / not a member yet" option.
 - Info: location and map, what to bring, membership/fees, rules/code of
   conduct, officers. Contact form. Schedule with add-to-calendar links.
+- Sign Up form fields: name, school email (@easternct.edu or
+  @my.easternct.edu), Eastern ID (exactly 8 digits), skill level (beginner,
+  intermediate, advanced, expert, master). Submissions are officer-read only.
 - Later extras: photo gallery, announcements, social links, beginner's guide.
 - Club name is a placeholder: "Eastern Connecticut Ping Pong Club" (one
   constant in `src/siteConfig.js`). Placeholder theme is green and white, all
@@ -120,8 +123,8 @@ Read all of it before changing anything.
 - Keep the free Supabase project from pausing (it pauses after 7 days of low
   activity): a scheduled GitHub Action pings it every few days and can export
   CSV backups (free plan has no automatic backups; re-verify).
-- Do not list member emails publicly. Get member consent before showing names,
-  especially for students.
+- Do not list member emails or Eastern ID numbers publicly, ever. Showing member
+  names is fine: the owner decided no consent step is needed (2026-10-23).
 - Supabase GitHub integration settings ("Deploy to production", automatic
   branching, "Supabase changes only") stay OFF until Phase 2 is stable. Do not
   enable them without asking.

@@ -98,6 +98,35 @@ A separate **prod** project is created later, once the structure is stable.
 - Lock rules live in small helper functions in the `private` schema and in
   triggers (they compare the old row with the new row, which a CHECK cannot).
 
+### Events, signups and contact messages (step 2d)
+
+- `events`: title, description, location, start and end time, kind (`practice`,
+  `tournament`, `social`, `other`), an optional link to a tournament, and a
+  `cancelled` flag. The Home page's "next event" is the first event whose
+  `starts_at` is in the future and not cancelled.
+- `signups` (the Sign Up form): name, school email (must end in
+  `@easternct.edu` or `@my.easternct.edu`), **Eastern ID (exactly 8 digits, stored
+  as text)**, skill level (`beginner`, `intermediate`, `advanced`, `expert`,
+  `master`). Visitors can only add rows, and only these four columns.
+  **Nobody but officers can read them**, so emails and Eastern IDs cannot
+  leak. They are never shown publicly.
+- `contact_messages`: name, email, message (up to 2000 characters), same
+  add-only rules.
+- No uniqueness rule on signup email or ID on purpose: a "that ID already
+  signed up" error would tell a stranger who is in the club. Officers remove
+  duplicates by hand.
+- The insert rule is `created_at = now()` rather than plain `true`, because
+  Supabase's checker flags always-true policies; it is always satisfied by a
+  normal insert.
+- Spam protection (CAPTCHA, rate limits) for these forms comes in Phase 5/9.
+
+### Sample data (`supabase/seed.sql`)
+
+Fake players, matches, a finished tournament and events, loaded only into a
+**local** database (`npx supabase start` / `db reset`). It is never sent to the
+hosted projects (`db push` skips it). The tests empty the tables first, so the
+sample data cannot change test results.
+
 ### Supabase's automatic-RLS helper
 
 "Enable automatic RLS" makes Supabase create `public.rls_auto_enable()`, which
@@ -106,9 +135,9 @@ call it (Security Advisor warning). The automatic behavior still works.
 
 ## What is planned next
 
-| Step | Adds                                                    |
-| ---- | ------------------------------------------------------- |
-| 2d   | `events`, `signups`, `contact_messages`, fake seed data |
+The database foundation (Phase 2) is complete. Later phases may add tables
+(for example the bracket tables that brackets-manager.js brings in Phase 7), always
+through new migrations and the checklist below.
 
 ### Decisions behind 2b
 
