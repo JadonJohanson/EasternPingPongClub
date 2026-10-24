@@ -1,6 +1,6 @@
-# Eastern Connecticut Ping Pong Club
+# ECSU Ping Pong
 
-Website for the Eastern Connecticut Ping Pong Club: upcoming events, results
+Website for the ECSU Ping Pong club (Eastern Connecticut State University): upcoming events, results
 and rankings, player profiles, and quick casual match logging from a phone.
 
 **Live site:** https://jadonjohanson.github.io/EasternPingPongClub/

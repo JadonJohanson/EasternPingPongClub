@@ -3,21 +3,27 @@
   To re-brand the site, edit the values below. Nothing else needs to change,
   because the rest of the CSS only refers to these names with var(--name).
 
-  The green and white below is a placeholder until the club picks real colors.
+  Club colors: white, blue (#1F3A6E) and red (#9B2335).
+  Blue is the main brand color (top bar, links, selected menu item).
+  Red is the accent, used for the main call-to-action button ("Join us").
 */
 
 :root {
   /* Brand colors */
-  --color-primary: #1f7a3d;
-  --color-primary-hover: #17602f;
+  --color-primary: #1f3a6e; /* club blue */
+  --color-primary-hover: #172c55;
   --color-on-primary: #ffffff; /* text drawn on top of the primary color */
+
+  --color-accent: #9b2335; /* club red */
+  --color-accent-hover: #7d1b2a;
+  --color-on-accent: #ffffff; /* text drawn on top of the accent color */
 
   /* Page colors */
   --color-bg: #ffffff;
-  --color-surface: #f1f7f3; /* cards and the sidebar */
-  --color-text: #14231a;
-  --color-muted: #4a5f52; /* secondary text */
-  --color-border: #d0dfd5;
+  --color-surface: #f2f5fa; /* cards and the sidebar */
+  --color-text: #121a2b;
+  --color-muted: #4b5870; /* secondary text */
+  --color-border: #d3dbe9;
 
   /* Shape and type */
   --radius: 10px;
@@ -30,17 +36,22 @@
 }
 
 /* Dark mode: when the visitor's phone or computer is set to dark, these
-   values replace the ones above. */
+   values replace the ones above. The club blue is too dark to read on a dark
+   page, so links and highlights use a lighter blue here. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-primary: #4cc27a;
-    --color-primary-hover: #6fd596;
-    --color-on-primary: #08140c;
+    --color-primary: #86a8ec;
+    --color-primary-hover: #a8c1f2;
+    --color-on-primary: #0b1220;
 
-    --color-bg: #0e1812;
-    --color-surface: #16251c;
-    --color-text: #e8f3ec;
-    --color-muted: #9db5a5;
-    --color-border: #2a3f32;
+    --color-accent: #c93a52;
+    --color-accent-hover: #d9566b;
+    --color-on-accent: #ffffff;
+
+    --color-bg: #0b1220;
+    --color-surface: #131d33;
+    --color-text: #e8edf7;
+    --color-muted: #9fb0cc;
+    --color-border: #26344f;
   }
 }

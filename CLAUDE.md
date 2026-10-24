@@ -1,4 +1,4 @@
-# CLAUDE.md: Eastern Connecticut Ping Pong Club website
+# CLAUDE.md: ECSU Ping Pong website
 
 Instructions and project memory for Claude sessions working in this repo.
 Read all of it before changing anything.
@@ -37,9 +37,11 @@ Read all of it before changing anything.
   @my.easternct.edu), Eastern ID (exactly 8 digits), skill level (beginner,
   intermediate, advanced, expert, master). Submissions are officer-read only.
 - Later extras: photo gallery, announcements, social links, beginner's guide.
-- Club name is a placeholder: "Eastern Connecticut Ping Pong Club" (one
-  constant in `src/siteConfig.js`). Placeholder theme is green and white, all
-  defined in ONE file (`src/theme.css`). Colors and logo not chosen yet.
+- Club name is "ECSU Ping Pong" (one constant in `src/siteConfig.js`). Colors
+  are white, blue `#1F3A6E` and red `#9B2335`, all defined in ONE file
+  (`src/theme.css`): blue is the main brand color, red the accent for the main
+  call-to-action button. No logo yet; `public/favicon.svg` is a plain
+  placeholder.
 
 ## Key design decisions (agreed)
 
