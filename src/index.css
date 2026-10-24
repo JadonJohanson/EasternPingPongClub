@@ -61,3 +61,14 @@ a {
   outline: 3px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+/* Hides text visually but keeps it for screen readers (e.g. labels for
+   inputs whose purpose is obvious from a placeholder). */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

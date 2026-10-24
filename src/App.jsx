@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx'
 import Info from './pages/Info.jsx'
 import NotFound from './pages/NotFound.jsx'
 import Play from './pages/Play.jsx'
+import PlayerProfile from './pages/PlayerProfile.jsx'
 import Players from './pages/Players.jsx'
 import Results from './pages/Results.jsx'
 import Schedule from './pages/Schedule.jsx'
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="schedule" element={<Schedule />} />
         <Route path="results" element={<Results />} />
         <Route path="players" element={<Players />} />
+        <Route path="players/:playerId" element={<PlayerProfile />} />
         <Route path="play" element={<Play />} />
         <Route path="info" element={<Info />} />
         <Route path="signup" element={<SignUp />} />

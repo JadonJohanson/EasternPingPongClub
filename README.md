@@ -87,3 +87,7 @@ migrations are in [docs/database.md](docs/database.md).
 
 Never commit passwords, tokens, or Supabase's **service-role key**. Local
 secrets go in a `.env` file, which is gitignored.
+
+## Importing players
+
+See `docs/importing-players.md` (CSV to SQL script, with a fake sample list in `sample-data/`).
