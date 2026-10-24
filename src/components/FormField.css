@@ -23,7 +23,8 @@
 
 /* Inputs and dropdowns. 16px text stops iPhones zooming in when you tap one. */
 .field input,
-.field select {
+.field select,
+.field textarea {
   width: 100%;
   box-sizing: border-box;
   padding: 0.7rem 0.8rem;
@@ -36,6 +37,12 @@
 }
 
 .field input[aria-invalid='true'],
-.field select[aria-invalid='true'] {
+.field select[aria-invalid='true'],
+.field textarea[aria-invalid='true'] {
   border-color: var(--color-accent);
+}
+
+.field textarea {
+  min-height: 8rem;
+  resize: vertical; /* visitors can drag it taller, not wider */
 }
