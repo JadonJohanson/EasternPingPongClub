@@ -230,3 +230,14 @@ the first officer login exists (Phase 6).
    `000_rls_and_grants.test.sql` and its allow/deny behaviour in a new test
    file.
 4. Open a pull request. CI must pass before merging.
+
+## Play form (casual matches)
+
+- The form saves in two steps: the match row (asking for its id back), then its
+  `match_games` rows. Games are only accepted for a casual match created in the
+  last 2 minutes.
+- If step 2 fails, a match with no games is left behind. It has no winner, so
+  stats pages must ignore matches that have no games.
+- Spam defense so far: a hidden honeypot field and a double-submit guard. The
+  Cloudflare Turnstile CAPTCHA and rate limits are still to do (Phase 5b); they
+  need a Cloudflare account and a server function or anonymous sign-in.
