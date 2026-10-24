@@ -188,6 +188,9 @@ authenticated`, then the exact `grant`s, then one policy per allowed action.
   database password, which must never be pasted into chat.
 - Hosted-project sign-ups must be turned off in the dashboard before the first
   officer login (Phase 6). `supabase/config.toml` already has them off.
+- Event times (`events.starts_at/ends_at`) are `timestamp(0)` with no time zone:
+  plain New York wall-clock time, by owner request (one location, simpler to
+  read). System moments such as `created_at` stay `timestamptz`.
 - Decisions for 2b: casual and tournament scores are stored game by game
   (`match_games`); a guest opponent is a typed name on the match, never a row
   in `players`.

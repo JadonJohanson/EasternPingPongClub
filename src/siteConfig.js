@@ -2,6 +2,6 @@
 // the whole site updates.
 export const CLUB_NAME = 'ECSU Ping Pong'
 
-// Event times are stored in the database as exact moments. The site always
-// shows them in this time zone, so a visitor's phone settings cannot shift them.
+// The club's time zone. Event times in the database are plain wall-clock times
+// in this zone (no time zone stored); this is used to know what "now" means.
 export const CLUB_TIME_ZONE = 'America/New_York'

@@ -1,3 +1,4 @@
+import { clubNow } from '../lib/formatDate.js'
 import { supabase } from '../lib/supabase.js'
 
 // Gets the next event that has not finished yet, or `null` if there is none.
@@ -6,7 +7,8 @@ import { supabase } from '../lib/supabase.js'
 // in the future (so a club night in progress still shows). Cancelled events
 // are skipped.
 export async function fetchNextEvent() {
-  const now = new Date().toISOString()
+  // Event times have no time zone, so compare against club wall-clock time.
+  const now = clubNow()
 
   const { data, error } = await supabase
     .from('events')

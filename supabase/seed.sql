@@ -81,8 +81,8 @@ insert into public.match_games (match_id, points_to, win_by_two, game_number, sc
 -- always an "upcoming" one. 'practice' and 'tournament' show different kinds.
 insert into public.events (title, description, location, starts_at, ends_at, kind) values
   ('Weekly practice', 'Open play, all levels welcome. Paddles provided.', 'Student Center, Game Room',
-   date_trunc('day', now()) + interval '2 days 19 hours', date_trunc('day', now()) + interval '2 days 21 hours', 'practice'),
+   date_trunc('day', now() at time zone 'America/New_York') + interval '2 days 19 hours', date_trunc('day', now() at time zone 'America/New_York') + interval '2 days 21 hours', 'practice'),
   ('Fall Open Tournament', 'Single elimination, seeded by club rating.', 'Student Center, Ballroom',
-   date_trunc('day', now()) + interval '9 days 18 hours', date_trunc('day', now()) + interval '9 days 22 hours', 'tournament'),
+   date_trunc('day', now() at time zone 'America/New_York') + interval '9 days 18 hours', date_trunc('day', now() at time zone 'America/New_York') + interval '9 days 22 hours', 'tournament'),
   ('Pizza and ping pong', 'Casual social night.', 'Student Center, Game Room',
-   date_trunc('day', now()) + interval '16 days 19 hours', null, 'social');
+   date_trunc('day', now() at time zone 'America/New_York') + interval '16 days 19 hours', null, 'social');
