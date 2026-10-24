@@ -71,6 +71,33 @@ A separate **prod** project is created later, once the structure is stable.
   and officers can fix mistakes.
 - A player who has matches cannot be deleted (foreign key). Rename instead.
 
+### Tournaments (step 2c)
+
+- `tournaments`: name, format (single or double elimination), seeding method
+  (`elo` or `random`), status, default scoring rule, optional third-place match.
+  **Life cycle:** `draft` -> `in_progress` -> `complete`. A complete tournament
+  is locked (no new or changed matches, games or entries). An officer reopens
+  it with `complete` -> `in_progress` to fix a result. Once started, format,
+  seeding method and scoring rule cannot change, and only a draft can be deleted.
+- `tournament_entries`: who is in it, plus the **snapshot** taken at bracket
+  creation: `seed`, `seed_rating`, `is_new` (shown as "new"), and `random_order`
+  (the stored shuffle for random seeding and the stored tie-break). Players are
+  added or removed only in a draft. Seeds can be swapped in one update. The
+  seeding columns lock when the tournament starts; withdrawals (`status`) and
+  `final_place` can still change until it is complete.
+- `rating_history`: club rating before and after each tournament, for profile
+  charts. Officer-written (by the Elo replay in Phase 8).
+- `matches` now has a real foreign key to `tournaments`, and a tournament
+  match's two players must be entered in that tournament.
+- **Walkovers** (forfeits, withdrawals): `is_walkover = true` and
+  `walkover_winner` (`a` or `b`). A walkover has no games, and a match with
+  games cannot become a walkover. Tournament matches only.
+- The bracket itself (who plays whom, advancing) comes from brackets-manager.js
+  in Phase 7, which brings its own tables; finished bracket matches are written
+  to `matches`.
+- Lock rules live in small helper functions in the `private` schema and in
+  triggers (they compare the old row with the new row, which a CHECK cannot).
+
 ### Supabase's automatic-RLS helper
 
 "Enable automatic RLS" makes Supabase create `public.rls_auto_enable()`, which
@@ -81,7 +108,6 @@ call it (Security Advisor warning). The automatic behavior still works.
 
 | Step | Adds                                                    |
 | ---- | ------------------------------------------------------- |
-| 2c   | `tournaments`, `tournament_entries`, `rating_history`   |
 | 2d   | `events`, `signups`, `contact_messages`, fake seed data |
 
 ### Decisions behind 2b
