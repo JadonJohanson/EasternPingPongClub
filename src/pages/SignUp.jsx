@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import FormField from '../components/FormField.jsx'
+import Honeypot from '../components/Honeypot.jsx'
 import { submitSignup } from '../data/signups.js'
 import { isSupabaseConfigured } from '../lib/supabase.js'
 import {
@@ -163,18 +164,8 @@ export default function SignUp() {
           )}
         </FormField>
 
-        {/* Honeypot (see above). Hidden from sight and from screen readers. */}
-        <div className="signup__trap" aria-hidden="true">
-          <label htmlFor="website">Leave this empty</label>
-          <input
-            id="website"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            value={website}
-            onChange={(event) => setWebsite(event.target.value)}
-          />
-        </div>
+        {/* Hidden field for bots (see the comment on `website` above). */}
+        <Honeypot value={website} onChange={setWebsite} />
 
         {status === 'failed' && (
           <p className="signup__failed" role="alert">

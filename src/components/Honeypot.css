@@ -1,0 +1,9 @@
+/* Moves the field far off-screen. (display:none can be detected by smarter
+   bots; off-screen positioning is the usual approach.) */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
