@@ -7,6 +7,10 @@
 begin;
 select plan(60);
 
+-- Start from empty tables so the optional sample data in supabase/seed.sql (loaded
+-- on a local reset) cannot change the counts below. Everything is rolled back at the end.
+truncate public.players, public.tournaments cascade;
+
 -- ---------------------------------------------------------------------------
 -- Test data (setup role)
 -- ---------------------------------------------------------------------------

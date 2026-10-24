@@ -6,7 +6,7 @@
 -- leave data behind.
 
 begin;
-select plan(24);
+select plan(32);
 
 -- 1. No table in the public schema may be missing Row Level Security.
 --    When you add a table in a later migration, this test fails until RLS is on.
@@ -69,6 +69,38 @@ select table_privs_are('public', 'rating_history', 'anon', array['SELECT'],
 select table_privs_are('public', 'rating_history', 'authenticated',
   array['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
   'authenticated can attempt every action on rating history (RLS limits it to officers)');
+
+select table_privs_are('public', 'events', 'anon', array['SELECT'],
+  'anon can only read events');
+select table_privs_are('public', 'events', 'authenticated',
+  array['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+  'authenticated can attempt every action on events (RLS limits it to officers)');
+select table_privs_are('public', 'signups', 'anon', array[]::text[],
+  'anon has no table-level access to signups (only the form columns, below)');
+select table_privs_are('public', 'signups', 'authenticated',
+  array['SELECT', 'UPDATE', 'DELETE'],
+  'authenticated can attempt to read, edit and delete signups (RLS limits it to officers)');
+select table_privs_are('public', 'contact_messages', 'anon', array[]::text[],
+  'anon has no table-level access to contact messages (only the form columns, below)');
+select table_privs_are('public', 'contact_messages', 'authenticated',
+  array['SELECT', 'DELETE'],
+  'authenticated can attempt to read and delete contact messages (RLS limits it to officers)');
+select ok(
+  has_column_privilege('anon', 'public.signups', 'name', 'INSERT')
+  and has_column_privilege('anon', 'public.signups', 'email', 'INSERT')
+  and has_column_privilege('anon', 'public.signups', 'eastern_id', 'INSERT')
+  and has_column_privilege('anon', 'public.signups', 'skill_level', 'INSERT')
+  and has_column_privilege('anon', 'public.contact_messages', 'message', 'INSERT'),
+  'anon may fill in the form columns of signups and contact_messages'
+);
+select ok(
+  not has_column_privilege('anon', 'public.signups', 'created_at', 'INSERT')
+  and not has_column_privilege('anon', 'public.signups', 'id', 'INSERT')
+  and not has_column_privilege('anon', 'public.signups', 'email', 'SELECT')
+  and not has_column_privilege('anon', 'public.signups', 'eastern_id', 'SELECT')
+  and not has_column_privilege('anon', 'public.contact_messages', 'email', 'SELECT'),
+  'anon can never read signup emails or Eastern IDs, or contact emails, and cannot set id or created_at'
+);
 
 -- Column-level insert rights for anon on matches: the Play form's columns yes,
 -- the server-controlled columns no.
